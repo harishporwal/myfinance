@@ -1,9 +1,13 @@
 Myfinance::Application.routes.draw do
+
+  resources :users, only: [:new, :create, :destroy, :show]
   root :to => 'static_pages#home'
   match '/home', to: 'static_pages#home'
   match '/contact', to: 'static_pages#contact'
   match '/about', to: 'static_pages#about'
   match '/help', to: 'static_pages#help'
+
+  match '/signup', to: 'users#new'
 
   get "static_page_controller/home" 
   get "static_page_controller/help"
