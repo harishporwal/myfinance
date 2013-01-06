@@ -40,4 +40,37 @@ describe "StaticPages" do
     
     it_should_behave_like "all_static_pages"
   end
+
+  describe "Home page should have proper links for" do
+    before {visit root_path}
+
+    describe "Home Page" do
+      before {click_link "Home"}
+      it {should have_selector("title", text: "#{base_title}")}
+    end
+
+    describe "Home page, when in another page" do
+      before do
+        visit root_path
+        click_link "Help"
+        click_link "Home"
+      end
+      it {should have_selector("title", text: "#{base_title}")}
+    end
+
+    describe "Help Page" do
+      before {click_link "Help"}
+      it {should have_selector("title", text: "#{base_title} | Help")}
+    end
+
+    describe "About Page" do
+      before {click_link "About"}
+      it {should have_selector("title", text: "#{base_title} | About")}
+    end
+    
+    describe "Contact Page" do
+      before {click_link "Contact"}
+      it {should have_selector("title", text: "#{base_title} | Contact")}
+    end
+  end
 end
