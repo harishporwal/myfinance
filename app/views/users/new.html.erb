@@ -1,0 +1,24 @@
+<% provide(:title, 'Sign up') %>
+<section id="forms">
+  <div class="page-header">
+    <h1>Sign up</h1>
+  </div>
+
+  <div class="row">
+    <div class="span10 offset1">
+      <div class="form-horizontal well">      
+      <%= form_for(@user) do |f| %>
+        <fieldset>
+          <legend>New User for MyFinance</legend>    
+          <%= render 'shared/error_messages', object: f.object %>
+          <%= render 'fields', f:f %>
+          <div class="form-actions">
+            <%= f.submit "Create my account" , class: "btn btn btn-primary" %>
+            <%= f.submit "Cancel" , class: "btn" %>
+          </div>
+        </fieldset>
+      <% end %>
+    </div>
+    </div>
+  </div>
+</section>
