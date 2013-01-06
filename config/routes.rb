@@ -1,4 +1,14 @@
 Myfinance::Application.routes.draw do
+  root :to => 'static_pages#home'
+  match '/contact', to: 'static_pages#contact'
+  match '/about', to: 'static_pages#about'
+  match '/help', to: 'static_pages#help'
+
+  get "static_page_controller/home" 
+  get "static_page_controller/help"
+  get "static_page_controller/about"
+  get "static_page_controller/contact"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
