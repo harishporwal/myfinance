@@ -1,6 +1,12 @@
 Myfinance::Application.routes.draw do
-
-  resources :users, only: [:new, :create, :destroy, :show]
+  #resources :users, only: [:new, :create, :destroy, :show, :settings]
+  resources :users do
+    member do
+      get 'settings'
+    end
+  end
+  resources :sessions, only: [:new, :create, :destroy]
+  
   root :to => 'static_pages#home'
   match '/home', to: 'static_pages#home'
   match '/contact', to: 'static_pages#contact'
@@ -8,6 +14,8 @@ Myfinance::Application.routes.draw do
   match '/help', to: 'static_pages#help'
 
   match '/signup', to: 'users#new'
+  match '/signin', to: 'sessions#new'
+  match '/signout', to: 'sessions#destroy', via: :delete
 
   get "static_page_controller/home" 
   get "static_page_controller/help"

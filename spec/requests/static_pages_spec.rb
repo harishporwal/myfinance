@@ -77,5 +77,10 @@ describe "StaticPages" do
       before {click_link "Sign up now!"}
       it {should have_selector("title", text: "Sign up")}
     end
+
+    describe "sign in page" do
+      before {click_link "Sign in"}
+      it {should have_selector("title", text: "Sign In")}
+    end
   end
 end

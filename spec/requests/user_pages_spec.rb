@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe "UserPages" do
+  let(:base_title) {'MyFinance'}
   subject {page}
 
   describe "signup page" do
@@ -31,6 +32,15 @@ describe "UserPages" do
     before {visit user_path(user)}
 
     it {should have_selector('h3', text: user.name)}
-    it {should have_selector('title', text: user.name)}
+    it {should have_selector('title', text: "#{base_title} | Profile")}
+  end
+
+  describe "settings page" do 
+    let(:user) {FactoryGirl.create(:user)}
+
+    before {visit settings_user_path(user)}
+
+    it {should have_selector('h3', text: user.name)}
+    it {should have_selector('title', text: "#{base_title} | Settings")}
   end
 end

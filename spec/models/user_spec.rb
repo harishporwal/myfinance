@@ -10,6 +10,8 @@ describe User do
   it { should respond_to(:password_digest) }
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
+  it { should respond_to(:remember_token) }
+  it { should respond_to(:authenticate) }
 
   it { should be_valid }
 
@@ -26,6 +28,11 @@ describe User do
   describe 'should not accept names with > 50 characters' do
     before {@user.name = "a" * 51}
     it { should_not be_valid }
+  end
+
+  describe 'remember token should not be saved as blank' do 
+    before {@user.save}
+    its (:remember_token) {should_not be_blank}
   end
 
   describe "check for email format" do
