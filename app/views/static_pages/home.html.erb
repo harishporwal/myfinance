@@ -1,3 +1,4 @@
+<% provide(:title, '') %>
 <div class="center hero-unit">
   <h1>MyFinance</h1>
   <h2>
@@ -10,7 +11,9 @@
       This unique feature enables you to understand your financial health and empowers you to make better decisions. So you can plan for a better tomorrow.
       </p>
       <br><br>
-      <%= link_to "Sign up now!", signup_path, 
-                            class: "btn btn-large btn-primary" %>
+      <% if !signed_in? %>
+        <%= link_to "Sign up now!", signup_path, 
+          class: "btn btn-large btn-primary" %>
+      <% end %>
 
 </div>

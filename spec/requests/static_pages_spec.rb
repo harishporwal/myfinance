@@ -15,6 +15,16 @@ describe "StaticPages" do
     let(:page_title) {"#{base_title}"}
 
     it_should_behave_like "all_static_pages"
+
+    describe "for signed in users" do
+      let(:user) {FactoryGirl.create(:user)}
+      before do
+        sign_in user 
+        visit root_path
+      end
+
+      it {should_not have_link("Sign up now!")}
+    end
   end
 
   describe "help page" do
