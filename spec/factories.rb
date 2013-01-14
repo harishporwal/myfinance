@@ -7,7 +7,7 @@ FactoryGirl.define do
   end
 
   factory :stock_watchlist do
-    symbol "ITC"
+    sequence(:symbol) {|n| "ITC#{n}"}
     exchange "NSE"
     classification "INVESTMENT"
     notes 'Good Defensive Investment Stock'

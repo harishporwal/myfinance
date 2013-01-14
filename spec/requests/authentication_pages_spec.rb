@@ -94,5 +94,39 @@ describe "AuthenticationPages" do
         it {should_not have_selector('title', text: "#{base_title} | Settings")}
       end
     end
+
+    describe 'in stock_watchlist_controller pages' do 
+      describe 'visiting the add stock page' do
+        before {visit new_stock_watchlist_path}
+
+        it {should have_selector('h1', text: 'Sign In')}
+      end
+
+      describe 'show stock page' do 
+        let(:stock) {FactoryGirl.create(:stock_watchlist)}
+        before {visit stock_watchlist_path(stock.symbol)}
+
+        it {should have_selector('h1', text: 'Sign In')}
+      end
+
+      describe 'submitting to the update action' do 
+        let(:stock) {FactoryGirl.create(:stock_watchlist)}
+        before {put stock_watchlist_path(stock)}
+
+        specify {response.should redirect_to(signin_path)}
+      end
+
+      describe 'visiting the stocks index page' do
+        before {visit stock_watchlists_path}
+
+        it {should have_selector('h1', text: 'Sign In')}
+      end
+
+      describe 'submitting to the destroy action' do
+        before {delete stock_watchlist_path(FactoryGirl.create(:stock_watchlist))}
+
+        specify {response.should redirect_to(signin_path)}
+      end
+    end
   end
 end

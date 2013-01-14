@@ -95,8 +95,8 @@ describe StockWatchlist do
     end
   end
 
-  describe 'should not accept notess with > 50 characters' do
-    before {@stock.notes= "a" * 51}
+  describe 'should not accept notess with > 128 characters' do
+    before {@stock.notes= "a" * 129}
     it { should_not be_valid }
   end
 

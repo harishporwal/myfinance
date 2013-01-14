@@ -93,4 +93,20 @@ describe "StaticPages" do
       it {should have_selector("title", text: "Sign In")}
     end
   end
+
+  describe "home page should have links for category stock watchlist " do
+    before {visit root_path}
+
+    describe "stock watchlist" do
+      it {should have_link("Stock Watchlist")}
+    end
+
+    describe "add stock to watchlist" do
+      it {should have_link("Add Stock", href: new_stock_watchlist_path)}
+    end
+
+    describe "list of stocks" do
+      it {should have_link("List of Stocks", href: stock_watchlists_path)}
+    end
+  end
 end

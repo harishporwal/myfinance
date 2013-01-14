@@ -1,0 +1,2 @@
+module StockWatchlistHelper
+end

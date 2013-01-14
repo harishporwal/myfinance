@@ -1,0 +1,23 @@
+<% provide(:title, 'Add Stock to Watchlist') %>
+<section id="forms">
+  <div class="page-header">
+    <h1>Add Stock to Watchlist</h1>
+  </div>
+
+  <div class="row">
+    <div class="span10 offset1">
+      <div class="form-horizontal well">      
+      <%= form_for(@stock_watchlist) do |f| %>
+        <fieldset>
+          <%= render 'shared/error_messages', object: f.object %>
+          <%= render 'fields', f:f %>
+          <div class="form-actions">
+            <%= f.submit "Add Stock" , class: "btn btn btn-primary" %>
+            <%= f.submit "Cancel" , class: "btn" %>
+          </div>
+        </fieldset>
+      <% end %>
+    </div>
+    </div>
+  </div>
+</section>

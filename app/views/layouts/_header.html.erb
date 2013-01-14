@@ -12,10 +12,10 @@
        <div class="nav-collapse" id="main-menu">
          <ul class="nav" id="main-menu-left">
            <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Stocks<b class="caret"></b></a>
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Stock Watchlist<b class="caret"></b></a>
             <ul class="dropdown-menu" id="swatch-menu">
-              <li><%= link_to "Stock Action1", "#" %></li>
-              <li><%= link_to "Stock Action2", "#" %></li>
+              <li><%= link_to "Add Stock", new_stock_watchlist_path() %></li>
+              <li><%= link_to "List of Stocks", stock_watchlists_path %></li>
               <li class="divider"></li>
               <li><%= link_to "Stock Action3", "#" %></li>
             </ul>

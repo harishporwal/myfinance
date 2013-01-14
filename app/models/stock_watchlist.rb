@@ -4,7 +4,7 @@ class StockWatchlist < ActiveRecord::Base
   validates :symbol, presence: true, length: {maximum: 15}, uniqueness: true
   validates :exchange, presence: true
   validates :classification, presence: true
-  validates :notes, length: {maximum: 50}
+  validates :notes, length: {maximum: 128}
 
   has_many :watch_parameters, dependent: :destroy, primary_key: "symbol", foreign_key: "symbol"
   has_many :tags, as: :taggable, dependent: :destroy

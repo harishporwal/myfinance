@@ -1,0 +1,22 @@
+<% provide(:title, 'Stocks in Watchlist') %>
+<section id="tables">
+  <div class="page-header">
+    <h1>Stocks in Watchlist</h1>
+  </div>
+  <%= will_paginate %>
+  
+  <table class="table table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Classification</th>
+        <th>Notes</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    <%= render @stock_watchlists%>
+    </tbody>
+  </table>
+  <%= will_paginate %>
+</section>

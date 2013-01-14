@@ -1,0 +1,36 @@
+<legend>Basic Stock Details</legend>    
+<div class="control-group">
+  <!-- Text input-->
+  <%= f.label :symbol, class: "control-label"%>
+  <div class="controls">
+    <%= f.text_field :symbol%>
+    <p class="help-block">Enter Stock Symbol</p>
+  </div>
+</div>
+
+<div class="control-group">
+  <!-- Select Exchange -->
+  <%= f.label :exchange, class: "control-label"%>
+  <div class="controls">
+    <%= f.select :exchange, ["NSE","BSE"]%>
+  </div>
+</div>
+    
+
+<div class="control-group">
+<!-- Select Classification -->
+  <%= f.label :classification, class: "control-label"%>
+  <div class="controls">
+      <%= f.select :classification, ["INVESTMENT","TRADING"]%>
+  </div>
+</div>
+
+<div class="control-group">
+<!-- Textarea -->
+  <%= f.label :notes, class: "control-label"%>
+  <div class="controls">
+  <div class="textarea">
+    <%= f.text_area :notes, rows:5%>
+  </div>
+  </div>
+</div>

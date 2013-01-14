@@ -6,7 +6,8 @@ Myfinance::Application.routes.draw do
     end
   end
   resources :sessions, only: [:new, :create, :destroy]
-  
+  resources :stock_watchlists
+
   root :to => 'static_pages#home'
   match '/home', to: 'static_pages#home'
   match '/contact', to: 'static_pages#contact'

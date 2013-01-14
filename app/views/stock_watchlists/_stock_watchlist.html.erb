@@ -1,0 +1,14 @@
+<tr>
+  <td>
+  <%= link_to stock_watchlist.symbol, edit_stock_watchlist_path(stock_watchlist.symbol) %>
+  </td>
+  <td>
+  <%= stock_watchlist.classification %>
+  </td>
+  <td>
+  <%= stock_watchlist.notes%>
+  </td>
+  <td>
+  <%= link_to "Delete", stock_watchlist, method: :delete, data: { confirm: "You sure?" } %>
+  </td>
+</tr>

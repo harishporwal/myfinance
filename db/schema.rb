@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130114075110) do
+ActiveRecord::Schema.define(:version => 20130114143430) do
 
   create_table "stock_watchlists", :force => true do |t|
     t.string   "symbol"
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(:version => 20130114075110) do
     t.datetime "updated_at",     :null => false
   end
 
-  add_index "stock_watchlists", ["classification"], :name => "index_stock_watchlists_on_classification", :unique => true
+  add_index "stock_watchlists", ["classification"], :name => "index_stock_watchlists_on_classification"
   add_index "stock_watchlists", ["symbol"], :name => "index_stock_watchlists_on_symbol", :unique => true
 
   create_table "tags", :force => true do |t|
