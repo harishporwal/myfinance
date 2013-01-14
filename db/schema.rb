@@ -11,7 +11,29 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130107043927) do
+ActiveRecord::Schema.define(:version => 20130114075110) do
+
+  create_table "stock_watchlists", :force => true do |t|
+    t.string   "symbol"
+    t.string   "exchange"
+    t.string   "classification"
+    t.string   "notes"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "stock_watchlists", ["classification"], :name => "index_stock_watchlists_on_classification", :unique => true
+  add_index "stock_watchlists", ["symbol"], :name => "index_stock_watchlists_on_symbol", :unique => true
+
+  create_table "tags", :force => true do |t|
+    t.string   "name"
+    t.integer  "taggable_id"
+    t.string   "taggable_type"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "tags", ["taggable_type", "taggable_id", "name"], :name => "index_tags_on_taggable_type_and_taggable_id_and_name", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "name"
@@ -24,5 +46,15 @@ ActiveRecord::Schema.define(:version => 20130107043927) do
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["remember_token"], :name => "index_users_on_remember_token"
+
+  create_table "watch_parameters", :force => true do |t|
+    t.string   "symbol"
+    t.string   "name"
+    t.decimal  "watch_level"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "watch_parameters", ["symbol", "name"], :name => "index_watch_parameters_on_symbol_and_name"
 
 end
