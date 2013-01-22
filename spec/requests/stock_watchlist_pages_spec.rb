@@ -14,6 +14,8 @@ describe "StockWatchlistPages" do
 
     it {should have_selector('title', text: "#{base_title} | Add Stock to Watchlist")}
     it {should have_selector('h1', text: 'Add Stock to Watchlist')}
+    it {should have_selector('legend', text: "Basic Stock Details")}
+    #it {should have_selector('legend', text: "Watch Parameters")}
 
 
     it "should not create account, with empty data" do
@@ -26,13 +28,21 @@ describe "StockWatchlistPages" do
       select "INVESTMENT", from: "Classification"
       fill_in "Notes", with: "Investment Stock"
 
-      expect {click_button submit}.to change(StockWatchlist, :count).by(1)
+      check "50 day"
+      check "100 day"
+      check "200 day"
+      fill_in "Resistance", with: 200
+      fill_in "Breakout", with: 300
+      fill_in "Price", with: 400
+
+      expect {click_button submit}.to change(StockWatchlist, :count).by(1) && 
+                                      change(WatchParameter, :count).by(1)
       should have_link('Sign out')
     end    
   end
 
   describe 'edit stock page' do 
-    let(:stock_watchlist) {FactoryGirl.create(:stock_watchlist)}
+    let!(:stock_watchlist) {FactoryGirl.create(:stock_watchlist)}
     before do 
       sign_in user
       visit edit_stock_watchlist_path(stock_watchlist.symbol)
@@ -41,26 +51,27 @@ describe "StockWatchlistPages" do
     describe 'page' do 
       it {should have_selector('title', text: "#{base_title} | Edit Stock from Watchlist")}
       it {should have_selector('h1', text: "Edit Stock - #{stock_watchlist.symbol}")}
-    end
-
-    describe 'with invalid information' do
-      before do 
-        fill_in "Symbol", with: ""
-        click_button 'Save Changes'
-      end
-
-      it {should have_content('error')}
+      it {should have_selector('legend', text: "Basic Stock Details")}
+      it {should have_selector('legend', text: "Watch Parameters")}
     end
 
     describe 'with valid information' do
       let(:new_symbol) {'New Symbol'}
       let(:new_exchange) {'BSE'}
       let(:new_classification) {'TRADING'}
+      let(:new_resistance) {500}
+      let(:new_breakout) {600}
+      let(:new_price) {700}
 
       before do
-        fill_in "Symbol", with:new_symbol
         select "BSE", from: "Exchange"
         select "TRADING", from: "Classification"
+        uncheck "50 day"
+        uncheck "100 day"
+        uncheck "200 day"
+        fill_in "Resistance", with: new_resistance
+        fill_in "Breakout", with: new_breakout
+        fill_in "Price", with: new_price
 
         click_button 'Save Changes'
       end
@@ -70,6 +81,12 @@ describe "StockWatchlistPages" do
       specify {stock_watchlist.reload.symbol == new_symbol}
       specify {stock_watchlist.reload.exchange == new_exchange}
       specify {stock_watchlist.reload.classification == new_classification}
+      specify {stock_watchlist.watch_parameter.reload.resistance == new_resistance}
+      specify {stock_watchlist.watch_parameter.reload.breakout== new_breakout}
+      specify {stock_watchlist.watch_parameter.reload.price== new_price}
+      specify {stock_watchlist.watch_parameter.reload.ma_50 == 0}
+      specify {stock_watchlist.watch_parameter.reload.ma_100 == 0}
+      specify {stock_watchlist.watch_parameter.reload.ma_200 == 0}
     end
   end
 
@@ -116,7 +133,8 @@ describe "StockWatchlistPages" do
 
       it {should have_link('Delete', href: stock_watchlist_path(StockWatchlist.first))}
       it "should be able to delete stock" do
-        expect {click_link('Delete')}.to change(StockWatchlist, :count).by(-1)
+        expect {click_link('Delete')}.to change(StockWatchlist, :count).by(-1) && 
+          change(WatchParameter, :count).by(-1)
       end
     end
   end

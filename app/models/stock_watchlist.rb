@@ -1,12 +1,13 @@
 class StockWatchlist < ActiveRecord::Base
-  attr_accessible :classification, :notes, :exchange, :symbol
+  attr_accessible :classification, :notes, :exchange, :symbol, :watch_parameter_attributes
 
   validates :symbol, presence: true, length: {maximum: 15}, uniqueness: true
   validates :exchange, presence: true
   validates :classification, presence: true
   validates :notes, length: {maximum: 128}
 
-  has_many :watch_parameters, dependent: :destroy, primary_key: "symbol", foreign_key: "symbol"
+  has_one :watch_parameter, dependent: :destroy, primary_key: "symbol", foreign_key: "symbol"
+  accepts_nested_attributes_for :watch_parameter, allow_destroy:true
   has_many :tags, as: :taggable, dependent: :destroy
 
   VALID_EXCHANGE_REGEX = /NSE|BSE/

@@ -11,6 +11,9 @@
         <fieldset>
           <%= render 'shared/error_messages', object: f.object %>
           <%= render 'fields', f:f %>
+          <%= f.fields_for :watch_parameter do |ff| %>
+            <%= render 'watch_parameters', f:ff %>
+          <% end %>
           <div class="form-actions">
             <%= f.submit "Add Stock" , class: "btn btn btn-primary" %>
             <%= f.submit "Cancel" , class: "btn" %>

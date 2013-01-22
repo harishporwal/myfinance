@@ -3,6 +3,7 @@ class StockWatchlistsController < ApplicationController
 
   def new
     @stock_watchlist = StockWatchlist.new
+    @stock_watchlist.build_watch_parameter
   end
 
   def create 

@@ -11,7 +11,7 @@ describe StockWatchlist do
   it { should respond_to(:classification) }
   it { should respond_to(:notes) }
 
-  it { should respond_to(:watch_parameters) }
+  it { should respond_to(:watch_parameter) }
 
   it { should be_valid }
 
@@ -103,36 +103,18 @@ describe StockWatchlist do
   describe "watch parameters associations" do 
     before {@stock.save}
 
-    let!(:watch_50_ema) {FactoryGirl.create(
-      :watch_parameter_ema_50, symbol: @stock.symbol)}
-    let!(:watch_100_ema) {FactoryGirl.create(
-      :watch_parameter_ema_100, symbol: @stock.symbol)}
-    let!(:watch_200_ema) {FactoryGirl.create(
-      :watch_parameter_ema_200, symbol: @stock.symbol)}
-    let!(:watch_breakout_level) {FactoryGirl.create(
-      :watch_parameter_breakout_level, symbol: @stock.symbol)}
-    let!(:watch_resistance_level) {FactoryGirl.create(
-      :watch_parameter_resistance_level, symbol: @stock.symbol)}
-    let!(:watch_price) {FactoryGirl.create(
-      :watch_parameter_price, symbol: @stock.symbol)}
-      
+    let!(:param1) {FactoryGirl.create(
+      :watch_parameter, symbol: @stock.symbol)}
 
-    it 'should have all the watch list parameters' do
-      @stock.watch_parameters.should include(watch_50_ema)
-      @stock.watch_parameters.should include(watch_100_ema)
-      @stock.watch_parameters.should include(watch_200_ema)
-      @stock.watch_parameters.should include(watch_breakout_level)
-      @stock.watch_parameters.should include(watch_resistance_level)
-      @stock.watch_parameters.should include(watch_price)
+    it 'should have all the associated watch list parameter' do
+      @stock.watch_parameter == param1
     end
 
-    it 'should destroy associated watch parameters' do
-      watch_parameters = @stock.watch_parameters.dup
+    it 'should destroy associated watch parameter' do
+      parameter = @stock.watch_parameter.dup
       @stock.destroy
-      watch_parameters.should_not be_empty
-      watch_parameters.each do |parameter| 
-        WatchParameter.find_by_id(parameter.id).should be_nil
-      end
+      parameter.should_not be_nil
+      WatchParameter.find_by_id(parameter.id).should be_nil
     end
   end
 

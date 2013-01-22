@@ -1,0 +1,44 @@
+<legend>Watch Parameters</legend>    
+<div class="control-group">
+  <label class="control-label">Moving Averages</label>
+
+  <!-- Multiple Checkboxes -->
+  <div class="controls">
+  <!-- Inline Checkboxes -->
+  <%= f.label :ma_50, "50 day", class: "checkbox inline"%>
+  <%= f.check_box :ma_50%>
+  <%= f.label :ma_100, "100 day", class: "checkbox inline"%>
+  <%= f.check_box :ma_100%>
+  <%= f.label :ma_200, "200 day", class: "checkbox inline"%>
+  <%= f.check_box :ma_200%>
+  </div>
+</div>
+
+
+<div class="control-group">
+  <!-- Text input-->
+  <%= f.label :resistance, class: "control-label"%>
+  <div class="controls">
+    <%= f.text_field :resistance%>
+    <p class="help-block">Enter the resistance level of the stock</p>
+  </div>
+</div>
+
+<div class="control-group">
+  <!-- Text input-->
+  <%= f.label :breakout, class: "control-label"%>
+  <div class="controls">
+    <%= f.text_field :breakout%>
+  <p class="help-block">Enter the breakout level of the stock</p>
+  </div>
+</div>
+
+
+<div class="control-group">
+  <!-- Text input-->
+  <%= f.label :price, class: "control-label"%>
+  <div class="controls">
+    <%= f.text_field :price%>
+  <p class="help-block">Enter the watch price level of the stock</p>
+  </div>
+</div>

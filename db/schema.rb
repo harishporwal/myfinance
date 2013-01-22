@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130114143430) do
+ActiveRecord::Schema.define(:version => 20130115025713) do
 
   create_table "stock_watchlists", :force => true do |t|
     t.string   "symbol"
@@ -49,12 +49,16 @@ ActiveRecord::Schema.define(:version => 20130114143430) do
 
   create_table "watch_parameters", :force => true do |t|
     t.string   "symbol"
-    t.string   "name"
-    t.decimal  "watch_level"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.decimal  "ma_50"
+    t.decimal  "ma_100"
+    t.decimal  "ma_200"
+    t.decimal  "resistance"
+    t.decimal  "breakout"
+    t.decimal  "price"
   end
 
-  add_index "watch_parameters", ["symbol", "name"], :name => "index_watch_parameters_on_symbol_and_name"
+  add_index "watch_parameters", ["symbol"], :name => "index_watch_parameters_on_symbol"
 
 end
