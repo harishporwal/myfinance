@@ -14,6 +14,7 @@
           <%= f.fields_for :watch_parameter do |ff| %>
             <%= render 'watch_parameters', f:ff %>
           <% end %>
+          <%= render 'tags_section', f:f %>
           <div class="form-actions">
             <%= f.submit "Add Stock" , class: "btn btn btn-primary" %>
             <%= f.submit "Cancel" , class: "btn" %>

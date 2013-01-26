@@ -6,6 +6,19 @@ FactoryGirl.define do
     password_confirmation "password"
   end
 
+  factory :watch_parameter do
+    ma_50 1
+    ma_100 1
+    ma_200 1
+    resistance 200
+    breakout 250
+    price 220
+  end
+
+  factory :tags do
+    name "Breakout Watch"
+  end
+  
   factory :stock_watchlist do
     sequence(:symbol) {|n| "ITC#{n}"}
     exchange "NSE"
@@ -17,14 +30,5 @@ FactoryGirl.define do
     end
 
     association :watch_parameter, factory: :watch_parameter
-  end
-
-  factory :watch_parameter do
-    ma_50 1
-    ma_100 1
-    ma_200 1
-    resistance 200
-    breakout 250
-    price 220
   end
 end

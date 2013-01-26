@@ -1,0 +1,9 @@
+<div class="control-group">
+  <!-- Text input-->
+  <%= f.label :name, "Tag", class: "control-label"%>
+  <div class="controls">
+    <%= f.text_field :name%>
+    <%= f.label :_destroy, "Remove Tag", class: "checkbox inline"%>
+    <%= f.check_box :_destroy %>
+  </div>
+</div>
