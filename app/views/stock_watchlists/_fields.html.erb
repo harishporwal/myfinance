@@ -3,7 +3,8 @@
   <!-- Text input-->
   <%= f.label :symbol, class: "control-label"%>
   <div class="controls">
-    <%= f.text_field :symbol%>
+    <% disable = true unless f.object.new_record? %>
+    <%= f.text_field :symbol, disabled: disable%>
     <p class="help-block">Enter Stock Symbol</p>
   </div>
 </div>

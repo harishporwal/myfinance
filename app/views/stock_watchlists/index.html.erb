@@ -1,22 +1,43 @@
 <% provide(:title, 'Stocks in Watchlist') %>
-<section id="tables">
-  <div class="page-header">
-    <h1>Stocks in Watchlist</h1>
+<div class="page-header">
+  <h1>Stocks in Watchlist</h1>
+</div>
+
+<section id="forms">
+  <div class="row">
+    <div class="span12">
+      <div class="form-horizontal well">      
+      <legend>Choose Filter Criteria</legend>
+      <%= form_tag("/stock_watchlists", :method => "get") do %>
+        <fieldset>
+          <%= render "filter_criteria" %>
+          <div class="form-actions">
+            <%= submit_tag("Filter", class: "btn btn-smally") %>
+            <%= submit_tag("Reset", class: "btn btn-small") %>
+          </div>
+        </fieldset>
+      <% end %>
+
+      <section id="tables">
+        <legend>List of Stocks</legend>
+        <%= will_paginate %>
+        
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Classification</th>
+              <th>Notes</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          <%= render @stock_watchlists%>
+          </tbody>
+        </table>
+        <%= will_paginate %>
+      </section>
+      </div>
+    </div>
   </div>
-  <%= will_paginate %>
-  
-  <table class="table table-bordered table-striped table-hover">
-    <thead>
-      <tr>
-        <th>Symbol</th>
-        <th>Classification</th>
-        <th>Notes</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-    <%= render @stock_watchlists%>
-    </tbody>
-  </table>
-  <%= will_paginate %>
 </section>

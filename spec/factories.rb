@@ -15,8 +15,24 @@ FactoryGirl.define do
     price 220
   end
 
-  factory :tags do
-    name "Breakout Watch"
+  factory :stock_watch_parameter do
+    ma_50 1
+    ma_100 1
+    ma_200 1
+    resistance 200
+    breakout 250
+    price 220
+
+    association :stock_watchlist, factory: :stock_watchlist
+  end
+
+  factory :tag do
+    sequence(:name) {|n| "Tag#{n}"}
+  end
+
+  factory :stock_tag, class: Tag do
+    sequence(:name) {|n| "Stock Tag#{n}"}
+    association :taggable, factory: :stock_watchlist
   end
   
   factory :stock_watchlist do

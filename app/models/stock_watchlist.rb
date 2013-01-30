@@ -20,4 +20,31 @@ class StockWatchlist < ActiveRecord::Base
   validates :classification, presence: true, format: {with: VALID_CLASSIFICATION_REGEX}
   
   before_save {|stock_watchlist| stock_watchlist.symbol = stock_watchlist.symbol.upcase}
+
+  # class level methods
+  def self.investment_stocks
+    where("classification = ?", "INVESTMENT")
+  end
+
+  def self.trading_stocks
+    where("classification = ?", "TRADING")
+  end
+
+  def self.tagged_stocks (tag_names)
+    stocks = []
+    stocks = StockWatchlist.joins(:tags).where("name in (?)",tag_names ).
+      group("'stock_watchlists'.id") if tag_names
+  end
+
+  def self.tagged_investment_stocks (tag_names)
+    stocks = []
+    stocks = StockWatchlist.investment_stocks.joins(:tags).where("name in (?)",tag_names ).
+      group("'stock_watchlists'.id") if tag_names
+  end
+
+  def self.tagged_trading_stocks (tag_names)
+    stocks = []
+    stocks = StockWatchlist.trading_stocks.joins(:tags).where("name in (?)",tag_names ).
+      group("'stock_watchlists'.id") if tag_names
+  end
 end

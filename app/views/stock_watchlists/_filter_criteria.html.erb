@@ -1,0 +1,40 @@
+<div class="control-group">
+  <label class="control-label">Classification</label>
+  <!-- Multiple Checkboxes -->
+  <div class="controls">
+    <!-- Inline Checkboxes -->
+    <%= label_tag(:filter_investment, "Investments", class: "checkbox inline") %>
+    <%= check_box_tag(:filter_investment,1,@filter_investment == '1') %>  
+    <%= label_tag(:filter_trading, "Trading", class: "checkbox inline") %>
+    <%= check_box_tag(:filter_trading,1,@filter_trading == '1') %>  
+  </div>
+</div>
+
+<div class="control-group">
+  <label class="control-label">Watch Parameters</label>
+  <!-- Multiple Checkboxes -->
+  <div class="controls">
+    <!-- Inline Checkboxes -->
+    <%= label_tag(:filter_50_ema, "50 EMA", class: "checkbox inline") %>
+    <%= check_box_tag(:filter_50_ema) %>  
+    <%= label_tag(:filter_100_ema, "100 EMA", class: "checkbox inline") %>
+    <%= check_box_tag(:filter_100_ema) %>  
+    <%= label_tag(:filter_200_ema, "200 EMA", class: "checkbox inline") %>
+    <%= check_box_tag(:filter_200_ema) %>  
+    <%= label_tag(:filter_resistance, "Resistance", class: "checkbox inline") %>
+    <%= check_box_tag(:filter_resistance) %>  
+    <%= label_tag(:filter_breakout, "Breakout", class: "checkbox inline") %>
+    <%= check_box_tag(:filter_breakout) %>  
+    <%= label_tag(:filter_price, "Price", class: "checkbox inline") %>
+    <%= check_box_tag(:filter_price) %>  
+  </div>
+</div>
+
+<div class="control-group">
+  <label class="control-label">Tags</label>
+  <!-- Multiple Checkboxes -->
+  <div class="controls">
+    <!-- Inline Checkboxes -->
+    <%= select_tag(:filter_tags, options_from_collection_for_select(@stock_tags, :name, :name, @filter_tags), multiple: true) %>
+  </div>
+</div>

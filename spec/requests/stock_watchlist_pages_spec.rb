@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'ruby-debug'
 
 describe "StockWatchlistPages" do
   let(:user) {FactoryGirl.create(:user)}
@@ -49,9 +50,7 @@ describe "StockWatchlistPages" do
   describe 'edit stock page' do 
     let!(:stock_watchlist) {FactoryGirl.create(:stock_watchlist)}
     before do 
-      stock_watchlist.tags.create(name: "Breakout Watch")
-      stock_watchlist.tags.create(name: "Momentum Watch")
-      stock_watchlist.tags.create(name: "Turnaround")
+      3.times {FactoryGirl.create(:stock_tag, taggable: stock_watchlist)}
       sign_in user
       visit edit_stock_watchlist_path(stock_watchlist.symbol)
     end
@@ -111,46 +110,73 @@ describe "StockWatchlistPages" do
   end
 
   describe 'index' do
-    before do
-      sign_in user
-      FactoryGirl.create(:stock_watchlist, symbol: 'TATAGLOBAL', notes: 'Stock for this year')
-      FactoryGirl.create(:stock_watchlist, symbol: 'COMPUSOFT', classification: 'TRADING',
-                         notes: 'Speculative Stock')
-      visit stock_watchlists_path
-    end
-
     describe "page" do
+      before do
+        sign_in user
+        FactoryGirl.create(:stock_watchlist, symbol: 'TATAGLOBAL', notes: 'Stock for this year')
+        FactoryGirl.create(:stock_watchlist, symbol: 'COMPUSOFT', classification: 'TRADING',
+                           notes: 'Speculative Stock')
+        visit stock_watchlists_path
+      end
+      
       it { should have_selector('h1', :text => 'Stocks in Watchlist') }
       it { should have_selector('title', :text => "#{base_title} | Stocks in Watchlist") }
 
+      describe 'filter criteria in page' do
+        before do
+          FactoryGirl.create(:stock_tag, name: "Tag1", taggable: FactoryGirl.create(:stock_watchlist))
+          FactoryGirl.create(:stock_tag, name: "Tag2", taggable: FactoryGirl.create(:stock_watchlist))
+          FactoryGirl.create(:stock_tag, name: "Tag3", taggable: FactoryGirl.create(:stock_watchlist))
+
+          visit stock_watchlists_path
+        end
+        it {should have_selector('legend', text: "Choose Filter Criteria")}
+
+        it "should have filter for classification" do
+          page.should have_selector('input', name: 'filter_investment')
+          page.should have_selector('input', name: 'filter_trading')
+        end
+
+        it "should have filter for watch parameters" do
+          page.should have_selector('input', name: 'filter_50_ema')
+          page.should have_selector('input', name: 'filter_100_ema')
+          page.should have_selector('input', name: 'filter_200_ema')
+          page.should have_selector('input', name: 'filter_resistance')
+          page.should have_selector('input', name: 'filter_breakout')
+          page.should have_selector('input', name: 'filter_price')
+        end
+
+        it "should have filter for tags" do
+          Tag.unique_stock_tags.each { |tag| page.should have_selector("option", text:tag.name) } 
+        end
+      end
+      
       it "should list each stock" do
         StockWatchlist.all.each do |stock_watchlist|
           page.should have_link("#{stock_watchlist.symbol}", 
                                 href: edit_stock_watchlist_path(stock_watchlist.symbol))
         end
       end
-    end
 
-    describe 'pagination' do
-      before(:all) {30.times {FactoryGirl.create(:stock_watchlist)}}
-      after(:all) {StockWatchlist.delete_all}
+      describe 'pagination' do
+        before(:all) {30.times {FactoryGirl.create(:stock_watchlist)}}
+        after(:all) {StockWatchlist.delete_all}
 
-      it {should have_selector('div.pagination')}
-      it "should list all stocks" do
-        StockWatchlist.paginate(page: 1) do |stock_watchlist|
-          page.should have_link("#{stock_watchlist.symbol}", 
-                                href: edit_stock_watchlist_path(stock_watchlist.symbol))
+        it {should have_selector('div.pagination')}
+        it "should list all stocks" do
+          StockWatchlist.paginate(page: 1) do |stock_watchlist|
+            page.should have_link("#{stock_watchlist.symbol}", 
+                                  href: edit_stock_watchlist_path(stock_watchlist.symbol))
+          end
         end
       end
     end
 
     describe 'delete stock_watchlist' do
       let!(:stock_watchlist) {FactoryGirl.create(:stock_watchlist)}
-      let!(:tag1) {stock_watchlist.tags.create(name: "Breakout Watch")}
-      let!(:tag2) {stock_watchlist.tags.create(name: "Momentum Watch")}
-      let!(:tag3) {stock_watchlist.tags.create(name: "Turnaround")}
-      
+
       before do
+        FactoryGirl.create(:stock_tag, taggable: stock_watchlist)
         sign_in user
         visit stock_watchlists_path
       end
@@ -158,8 +184,203 @@ describe "StockWatchlistPages" do
       it {should have_link('Delete', href: stock_watchlist_path(stock_watchlist))}
       it "should be able to delete stock" do
         expect {click_link('Delete')}.to change(StockWatchlist, :count).by(-1) && 
-                  change(WatchParameter, :count).by(-1) &&
-                  change(Tag, :count).by(-3)
+                  change(WatchParameter, :count).by(-1) #&& change(Tag, :count).by(-1)
+      end
+    end
+
+    describe "filter criteria" do
+      let(:investment_symbols) {["ITC","HUL","HDFC","TATAMOTORS","BAJAJ-AUTO"]}
+      let(:trading_symbols) {["AKZO","JP","PIPAVAV"]}
+      let(:other_symbols) {["SYM1","SYM2"]}
+
+      let(:tag1_symbols) {investment_symbols}
+      let(:tag2_symbols) {trading_symbols}
+      let(:tag3_symbols) {other_symbols}
+      
+      let(:tag1) {"Tag1"}
+      let(:tag2) {"Tag2"}
+      let(:tag3) {"Tag3"}
+
+      before  do
+        investment_symbols.each {|symbol| FactoryGirl.create(:stock_tag, name: tag1, 
+                                    taggable: FactoryGirl.create(:stock_watchlist, symbol: symbol))}
+        trading_symbols.each {|symbol| FactoryGirl.create(:stock_tag, name: tag2, taggable: 
+                                    FactoryGirl.create(:stock_watchlist_trading, symbol: symbol))}
+        other_symbols.each {|symbol| FactoryGirl.create(:stock_tag, name: tag3, taggable: 
+                                    FactoryGirl.create(:stock_watchlist, symbol: symbol))}
+        sign_in user
+        visit stock_watchlists_path
+      end
+      after {StockWatchlist.delete_all}
+
+
+      it "without selection, should list all stocks" do
+        click_button 'Filter'
+        (investment_symbols + trading_symbols + other_symbols).each {|symbol|
+          should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+
+        page.find('#filter_investment').should_not be_checked
+        page.find('#filter_trading').should_not be_checked
+      end
+
+        
+      describe "for classification" do
+        before do
+          uncheck "Investments"
+          uncheck "Trading"
+        end
+
+        it "should list only investment stocks" do
+          check "Investments"
+          click_button 'Filter'
+          
+          (investment_symbols + other_symbols).each  { |symbol| 
+                        should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+          (trading_symbols).each { |symbol|
+                        should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+
+          page.find('#filter_investment').should be_checked
+          page.find('#filter_trading').should_not be_checked
+        end
+
+        it "should list only trading stocks" do
+          check "Trading"
+          click_button 'Filter'
+          
+          (trading_symbols).each { |symbol|
+                  should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+          (investment_symbols + other_symbols).each { |symbol|
+                  should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+
+          page.find('#filter_investment').should_not be_checked
+          page.find('#filter_trading').should be_checked
+        end
+
+           
+        it "should list both trading & investment stocks" do
+          check "Investments"
+          check "Trading"
+          click_button 'Filter'
+          
+          (investment_symbols + trading_symbols + other_symbols).each { |symbol|
+            should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+
+          page.find('#filter_investment').should be_checked
+          page.find('#filter_trading').should be_checked
+        end
+      end
+
+      describe "for tags" do
+        before do
+          uncheck "Investments"
+          uncheck "Trading"
+          unselect "Tag1"
+          unselect "Tag2"
+          unselect "Tag3"
+        end
+
+        it "should list only selected tag stocks -single selection" do
+          select "Tag1"
+          
+          click_button 'Filter'
+          
+          (tag1_symbols).each  {|symbol|
+              should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+          
+          (tag2_symbols+tag3_symbols).each { |symbol|
+              should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+
+          page.find_field('filter_tags').find('option[selected]').text.should == 'Tag1'
+        end
+
+        it "should list only selected tag stocks -multiple selection" do
+          select "Tag1"
+          select "Tag2"
+          
+          click_button 'Filter'
+ 
+          (tag1_symbols + tag2_symbols).each  { |symbol|
+              should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+ 
+          (tag3_symbols).each  { |symbol|
+              should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+
+          page.has_select?('filter_tags', selected: ["Tag1","Tag2"]).should == true
+        end
+      end
+
+      describe "for combination of classification & tags" do
+        before do
+          uncheck "Investments"
+          uncheck "Trading"
+          unselect "Tag1"
+          unselect "Tag2"
+          unselect "Tag3"
+        end
+
+        it "should list investment and tagged stocks" do
+          check "Investments"
+          select "Tag1"
+          
+          click_button 'Filter'
+          
+          (investment_symbols & tag1_symbols).each  {|symbol|
+              should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+ 
+          (trading_symbols).each  {|symbol|
+              should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+ 
+          (tag2_symbols + tag3_symbols).each  {|symbol|
+              should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+          
+
+          page.find('#filter_investment').should be_checked
+          page.find('#filter_trading').should_not be_checked
+          page.find_field('filter_tags').find('option[selected]').text.should == 'Tag1'
+        end
+
+        it "should list both investment & trading - tagged stocks" do
+          check "Investments"
+          check "Trading"
+          select "Tag2"
+          
+          click_button 'Filter'
+          
+          (investment_symbols & tag2_symbols).each {|symbol|
+              should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+
+          (trading_symbols & tag2_symbols).each {|symbol|
+              should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+
+          (tag1_symbols + tag3_symbols).each {|symbol|
+              should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+
+          page.find('#filter_investment').should be_checked
+          page.find('#filter_trading').should be_checked
+          page.find_field('filter_tags').find('option[selected]').text.should == 'Tag2'
+        end
+
+       it "should list both investment & trading - multiple tagged stocks" do
+          check "Investments"
+          check "Trading"
+          select "Tag1"
+          select "Tag2"
+          
+          click_button 'Filter'
+ 
+          (investment_symbols & (tag1_symbols + tag2_symbols)).each {|symbol|
+              should have_link("#{symbol}",  href: edit_stock_watchlist_path(symbol))}
+          (trading_symbols & (tag1_symbols + tag2_symbols)).each {|symbol|
+              should have_link("#{symbol}",  href: edit_stock_watchlist_path(symbol))}
+
+          (tag3_symbols).each {|symbol|
+              should_not have_link("#{symbol}",  href: edit_stock_watchlist_path(symbol))}
+
+          page.find('#filter_investment').should be_checked
+          page.find('#filter_trading').should be_checked
+
+          page.has_select?('filter_tags', selected: ["Tag1","Tag2"]).should == true
+       end
       end
     end
   end

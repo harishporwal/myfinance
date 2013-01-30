@@ -12,8 +12,16 @@ describe StockWatchlist do
   it { should respond_to(:notes) }
 
   it { should respond_to(:watch_parameter) }
+  it { should respond_to(:tags) }
 
   it { should be_valid }
+
+  it { StockWatchlist.should respond_to(:investment_stocks) }
+  it { StockWatchlist.should respond_to(:trading_stocks) }
+  it { StockWatchlist.should respond_to(:tagged_stocks).with(1).arguments }
+  it { StockWatchlist.should respond_to(:tagged_investment_stocks).with(1).arguments }
+  it { StockWatchlist.should respond_to(:tagged_trading_stocks).with(1).arguments }
+
 
   describe 'should not accept blank symbol' do
     before {@stock.symbol = ""}
@@ -125,7 +133,7 @@ describe StockWatchlist do
     let!(:tag2) {@stock.tags.build(name: "Momentum Watch")}
      
     it 'should have all the tags ' do
-      @stock.tags.count == 2 
+      @stock.tags.length.should == 2 
       @stock.tags.should include(tag1)
       @stock.tags.should include(tag2)
     end
@@ -137,6 +145,89 @@ describe StockWatchlist do
       tags.each do |tag| 
         Tag.find_by_id(tag.id).should be_nil
       end
+    end
+  end
+
+  describe "stock classification" do
+    let(:investment_stock_symbols) {["ITC","HUL","HDFC","TATAMOTORS","BAJAJ-AUTO"]}
+    let(:trading_stock_symbols) {["AKZO","JP","PIPAVAV"]}
+
+    before do
+      investment_stock_symbols.each {|symbol| FactoryGirl.create(:stock_watchlist, symbol: symbol)}
+      trading_stock_symbols.each {|symbol| FactoryGirl.create(:stock_watchlist_trading, symbol: symbol)}
+    end
+
+    it 'should show only investment stocks' do
+      StockWatchlist.investment_stocks.length.should == investment_stock_symbols.size
+      StockWatchlist.investment_stocks.each {|stock| investment_stock_symbols.should include(stock.symbol)}
+    end
+
+    it 'should show only trading stocks' do
+      StockWatchlist.trading_stocks.length.should == trading_stock_symbols.size
+      StockWatchlist.trading_stocks.each {|stock| trading_stock_symbols.should include(stock.symbol)}
+    end
+  end
+
+  describe "stock tags" do
+    let(:momentum_tag_symbols) {["ITC","HUL","HDFC","TATAMOTORS","BAJAJ-AUTO"]}
+    let(:breakout_tag_symbols) {["AKZO","JP","PIPAVAV"]}
+    let(:momentum_tag) {"Momentum"}
+    let(:breakout_tag) {"Breakout"}
+
+    before do
+      momentum_tag_symbols.each {|symbol| FactoryGirl.create(:stock_tag, name: momentum_tag, 
+                                    taggable: FactoryGirl.create(:stock_watchlist, symbol: symbol))}
+      breakout_tag_symbols.each {|symbol| FactoryGirl.create(:stock_tag, name: breakout_tag, 
+                                    taggable: FactoryGirl.create(:stock_watchlist, symbol: symbol))}
+    end
+
+    it 'should show only specified single tag' do
+      StockWatchlist.tagged_stocks([momentum_tag]).length.should  == momentum_tag_symbols.size
+      StockWatchlist.tagged_stocks([momentum_tag]).each {|stock| momentum_tag_symbols.should include(stock.symbol)}
+    end
+
+    it 'should show only specified multiple tags' do
+      StockWatchlist.tagged_stocks([momentum_tag, breakout_tag]).length.should == 
+        (momentum_tag_symbols.size + breakout_tag_symbols.size)
+      all_tag_symbols = momentum_tag_symbols + breakout_tag_symbols
+      StockWatchlist.tagged_stocks([momentum_tag,breakout_tag]).each {|stock| 
+                                    all_tag_symbols.should include(stock.symbol)}
+    end
+
+    it 'should not show anthing for a wrong tag' do
+      StockWatchlist.tagged_stocks(["Not Existing"]).length.should  == 0
+    end
+  end
+
+  describe "stock classification & tags together" do
+    let(:momentum_tag_symbols) {["ITC","HUL","HDFC","TATAMOTORS","BAJAJ-AUTO"]}
+    let(:breakout_tag_symbols) {["AKZO","JP","PIPAVAV"]}
+    let(:momentum_tag) {"Momentum"}
+    let(:breakout_tag) {"Breakout"}
+
+    before do
+      momentum_tag_symbols.each {|symbol| FactoryGirl.create(:stock_tag, name: momentum_tag, 
+                              taggable: FactoryGirl.create(:stock_watchlist, symbol: symbol))}
+      breakout_tag_symbols.each {|symbol| FactoryGirl.create(:stock_tag, name: breakout_tag, 
+                              taggable: FactoryGirl.create(:stock_watchlist_trading, symbol: symbol))}
+    end
+
+    it 'should show investment stocks which are tagged' do
+      StockWatchlist.tagged_investment_stocks([momentum_tag]).length.should  == momentum_tag_symbols.size
+      StockWatchlist.tagged_investment_stocks([momentum_tag]).each {|stock| momentum_tag_symbols.should include(stock.symbol)}
+    end
+
+    it 'should not show investment stocks which are wrongly tagged' do
+      StockWatchlist.tagged_investment_stocks([breakout_tag]).length.should  == 0
+    end
+
+    it 'should show trading stocks which are tagged' do
+      StockWatchlist.tagged_trading_stocks([breakout_tag]).length.should  == breakout_tag_symbols.size
+      StockWatchlist.tagged_trading_stocks([breakout_tag]).each {|stock| breakout_tag_symbols.should include(stock.symbol)}
+    end
+
+    it 'should not show trading stocks which are wrongly tagged' do
+      StockWatchlist.tagged_trading_stocks([momentum_tag]).length.should  == 0
     end
   end
 end

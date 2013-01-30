@@ -18,6 +18,8 @@ Myfinance::Application.routes.draw do
   match '/signin', to: 'sessions#new'
   match '/signout', to: 'sessions#destroy', via: :delete
 
+  match '/stock_watchlists/filter', to: 'stock_watchlists#filter'
+
   get "static_page_controller/home" 
   get "static_page_controller/help"
   get "static_page_controller/about"
