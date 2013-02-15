@@ -4,9 +4,9 @@
   <div class="controls">
     <!-- Inline Checkboxes -->
     <%= label_tag(:filter_investment, "Investments", class: "checkbox inline") %>
-    <%= check_box_tag(:filter_investment,1,@filter_investment == '1') %>  
+    <%= check_box_tag(:filter_investment,"INVESTMENT",@filter_investment == 'INVESTMENT') %>  
     <%= label_tag(:filter_trading, "Trading", class: "checkbox inline") %>
-    <%= check_box_tag(:filter_trading,1,@filter_trading == '1') %>  
+    <%= check_box_tag(:filter_trading,"TRADING",@filter_trading == 'TRADING') %>  
   </div>
 </div>
 

@@ -16,11 +16,7 @@ describe StockWatchlist do
 
   it { should be_valid }
 
-  it { StockWatchlist.should respond_to(:investment_stocks) }
-  it { StockWatchlist.should respond_to(:trading_stocks) }
-  it { StockWatchlist.should respond_to(:tagged_stocks).with(1).arguments }
-  it { StockWatchlist.should respond_to(:tagged_investment_stocks).with(1).arguments }
-  it { StockWatchlist.should respond_to(:tagged_trading_stocks).with(1).arguments }
+  it { StockWatchlist.should respond_to(:search).with(3).arguments }
 
 
   describe 'should not accept blank symbol' do
@@ -158,13 +154,15 @@ describe StockWatchlist do
     end
 
     it 'should show only investment stocks' do
-      StockWatchlist.investment_stocks.length.should == investment_stock_symbols.size
-      StockWatchlist.investment_stocks.each {|stock| investment_stock_symbols.should include(stock.symbol)}
+      investment_stocks = StockWatchlist.search([StockWatchlist::CLASSIFICATION_INVESTMENT],nil,nil)
+      investment_stocks.length.should == investment_stock_symbols.size
+      investment_stocks.each {|stock| investment_stock_symbols.should include(stock.symbol)}
     end
 
     it 'should show only trading stocks' do
-      StockWatchlist.trading_stocks.length.should == trading_stock_symbols.size
-      StockWatchlist.trading_stocks.each {|stock| trading_stock_symbols.should include(stock.symbol)}
+      trading_stocks = StockWatchlist.search([StockWatchlist::CLASSIFICATION_TRADING],nil,nil)
+      trading_stocks.length.should == trading_stock_symbols.size
+      trading_stocks.each {|stock| trading_stock_symbols.should include(stock.symbol)}
     end
   end
 
@@ -182,20 +180,20 @@ describe StockWatchlist do
     end
 
     it 'should show only specified single tag' do
-      StockWatchlist.tagged_stocks([momentum_tag]).length.should  == momentum_tag_symbols.size
-      StockWatchlist.tagged_stocks([momentum_tag]).each {|stock| momentum_tag_symbols.should include(stock.symbol)}
+      tagged_stocks = StockWatchlist.search(nil,nil,[momentum_tag])
+      tagged_stocks.length.should  == momentum_tag_symbols.size
+      tagged_stocks.each {|stock| momentum_tag_symbols.should include(stock.symbol)}
     end
 
     it 'should show only specified multiple tags' do
-      StockWatchlist.tagged_stocks([momentum_tag, breakout_tag]).length.should == 
-        (momentum_tag_symbols.size + breakout_tag_symbols.size)
+      tagged_stocks = StockWatchlist.search(nil,nil,[momentum_tag, breakout_tag])
+      tagged_stocks.length.should == (momentum_tag_symbols.size + breakout_tag_symbols.size)
       all_tag_symbols = momentum_tag_symbols + breakout_tag_symbols
-      StockWatchlist.tagged_stocks([momentum_tag,breakout_tag]).each {|stock| 
-                                    all_tag_symbols.should include(stock.symbol)}
+      tagged_stocks.each {|stock| all_tag_symbols.should include(stock.symbol)}
     end
 
     it 'should not show anthing for a wrong tag' do
-      StockWatchlist.tagged_stocks(["Not Existing"]).length.should  == 0
+      StockWatchlist.search(nil,nil,["Not Existing"]).length.should  == 0
     end
   end
 
@@ -213,21 +211,27 @@ describe StockWatchlist do
     end
 
     it 'should show investment stocks which are tagged' do
-      StockWatchlist.tagged_investment_stocks([momentum_tag]).length.should  == momentum_tag_symbols.size
-      StockWatchlist.tagged_investment_stocks([momentum_tag]).each {|stock| momentum_tag_symbols.should include(stock.symbol)}
+      tagged_investment_stocks = StockWatchlist.search([StockWatchlist::CLASSIFICATION_INVESTMENT],
+                                                        nil,[momentum_tag])
+      tagged_investment_stocks.length.should  == momentum_tag_symbols.size
+      tagged_investment_stocks.each {|stock| momentum_tag_symbols.should include(stock.symbol)}
     end
 
     it 'should not show investment stocks which are wrongly tagged' do
-      StockWatchlist.tagged_investment_stocks([breakout_tag]).length.should  == 0
+      StockWatchlist.search([StockWatchlist::CLASSIFICATION_INVESTMENT],nil,[breakout_tag]).
+        length.should  == 0
     end
 
     it 'should show trading stocks which are tagged' do
-      StockWatchlist.tagged_trading_stocks([breakout_tag]).length.should  == breakout_tag_symbols.size
-      StockWatchlist.tagged_trading_stocks([breakout_tag]).each {|stock| breakout_tag_symbols.should include(stock.symbol)}
+      tagged_trading_stocks = StockWatchlist.search([StockWatchlist::CLASSIFICATION_TRADING],
+                                                        nil,[breakout_tag])
+      tagged_trading_stocks.length.should  == breakout_tag_symbols.size
+      tagged_trading_stocks.each {|stock| breakout_tag_symbols.should include(stock.symbol)}
     end
 
     it 'should not show trading stocks which are wrongly tagged' do
-      StockWatchlist.tagged_trading_stocks([momentum_tag]).length.should  == 0
+      StockWatchlist.search([StockWatchlist::CLASSIFICATION_TRADING],nil,[momentum_tag]).
+        length.should  == 0
     end
   end
 end

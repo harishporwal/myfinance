@@ -47,17 +47,9 @@ class StockWatchlistsController < ApplicationController
     @filter_trading = params[:filter_trading]
     @filter_tags = params[:filter_tags]
 
-    if ((@filter_investment ==  @filter_trading) && 
-        (@filter_tags == nil || @filter_tags.length == @stock_tags.length))
-      @stock_watchlists = StockWatchlist.paginate(page: params[:page])
-    elsif (!@filter_tags)
-      @stock_watchlists = (@filter_investment ? StockWatchlist.investment_stocks :
-                           StockWatchlist.trading_stocks).paginate(page: params[:page])
-    elsif (@filter_tags)
-      @stock_watchlists = StockWatchlist.tagged_stocks(@filter_tags).paginate(page: params[:page])
-    else
-      @stock_watchlists = (@filter_investment ? StockWatchlist.tagged_investment_stocks(@filter_tags):
-                     StockWatchlist.tagged_trading_stocks(@filter_tags)).paginate(page: params[:page])
-    end
+
+    filter_classification = [@filter_investment, @filter_trading]
+    @stock_watchlists = StockWatchlist.search(filter_classification.delete_if{|x| x == nil},
+                                              nil,@filter_tags).paginate(page: params[:page])
   end
 end

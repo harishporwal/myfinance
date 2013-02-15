@@ -16,35 +16,22 @@ class StockWatchlist < ActiveRecord::Base
   VALID_EXCHANGE_REGEX = /NSE|BSE/
   validates :exchange, presence: true, format: {with: VALID_EXCHANGE_REGEX}
 
+  CLASSIFICATION_INVESTMENT = "INVESTMENT"
+  CLASSIFICATION_TRADING = "TRADING"
+
   VALID_CLASSIFICATION_REGEX = /INVESTMENT|TRADING/
   validates :classification, presence: true, format: {with: VALID_CLASSIFICATION_REGEX}
   
   before_save {|stock_watchlist| stock_watchlist.symbol = stock_watchlist.symbol.upcase}
 
   # class level methods
-  def self.investment_stocks
-    where("classification = ?", "INVESTMENT")
-  end
+  def self.search(classifications, watch_parameters, tag_names)
+    stocks = scoped
 
-  def self.trading_stocks
-    where("classification = ?", "TRADING")
-  end
+    stocks = stocks.where("classification in (?)", classifications) unless classifications.to_a.empty? 
+    stocks = stocks.joins(:tags).where("name in (?)",tag_names ).
+      group("'stock_watchlists'.id") unless tag_names.to_a.empty?
 
-  def self.tagged_stocks (tag_names)
-    stocks = []
-    stocks = StockWatchlist.joins(:tags).where("name in (?)",tag_names ).
-      group("'stock_watchlists'.id") if tag_names
-  end
-
-  def self.tagged_investment_stocks (tag_names)
-    stocks = []
-    stocks = StockWatchlist.investment_stocks.joins(:tags).where("name in (?)",tag_names ).
-      group("'stock_watchlists'.id") if tag_names
-  end
-
-  def self.tagged_trading_stocks (tag_names)
-    stocks = []
-    stocks = StockWatchlist.trading_stocks.joins(:tags).where("name in (?)",tag_names ).
-      group("'stock_watchlists'.id") if tag_names
+    return stocks
   end
 end

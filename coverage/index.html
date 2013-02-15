@@ -14,27 +14,27 @@
       <img src="./assets/0.7.1/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" style="display:none;">
-      <div class="timestamp">Generated <abbr class="timeago" title="2013-01-29T09:55:12+05:30">2013-01-29T09:55:12+05:30</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2013-02-15T19:35:05+05:30">2013-02-15T19:35:05+05:30</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
         <div class="file_list_container" id="AllFiles">
   <h2>
     <span class="group_name">All Files</span>
-    (<span class="covered_percent"><span class="red">60.71%</span></span>
+    (<span class="covered_percent"><span class="red">61.99%</span></span>
      covered at
      <span class="covered_strength">
-       <span class="red">
-         0.96
+       <span class="green">
+         1.05
        </span>
     </span> hits/line)
   </h2>
   <a name="AllFiles"></a>
   <div>
     <b>14</b> files in total.
-    <b>168</b> relevant lines. 
-    <span class="green"><b>102</b> lines covered</span> and
-    <span class="red"><b>66</b> lines missed </span>
+    <b>171</b> relevant lines. 
+    <span class="green"><b>106</b> lines covered</span> and
+    <span class="red"><b>65</b> lines missed </span>
   </div>
   <table class="file_list">
     <thead>
@@ -82,11 +82,11 @@
       
       <tr>
         <td class="strong"><a href="#35aba05addf90cb3adc825657bfb282064870240" class="src_link" title="app/controllers/stock_watchlists_controller.rb">app/controllers/stock_watchlists_controller.rb</a></td>
-        <td class="red strong">27.27 %</td>
-        <td>56</td>
-        <td>33</td>
+        <td class="red strong">28.13 %</td>
+        <td>53</td>
+        <td>32</td>
         <td>9</td>
-        <td>24</td>
+        <td>23</td>
         <td>0.3</td>
       </tr>
       
@@ -153,11 +153,11 @@
       <tr>
         <td class="strong"><a href="#e18f2492a1a6a40565704593de967e1d66ff3281" class="src_link" title="app/models/stock_watchlist.rb">app/models/stock_watchlist.rb</a></td>
         <td class="green strong">100.0 %</td>
-        <td>47</td>
-        <td>28</td>
-        <td>28</td>
+        <td>59</td>
+        <td>32</td>
+        <td>32</td>
         <td>0</td>
-        <td>4.6</td>
+        <td>5.8</td>
       </tr>
       
       <tr>
@@ -485,11 +485,11 @@
         <div class="source_table" id="35aba05addf90cb3adc825657bfb282064870240">
   <div class="header">
     <h3>app/controllers/stock_watchlists_controller.rb</h3>
-    <h4><span class="red">27.27 %</span> covered</h4>
+    <h4><span class="red">28.13 %</span> covered</h4>
     <div>
-      <b>33</b> relevant lines. 
+      <b>32</b> relevant lines. 
       <span class="green"><b>9</b> lines covered</span> and
-      <span class="red"><b>24</b> lines missed.</span>
+      <span class="red"><b>23</b> lines missed.</span>
     </div>
   </div>
   
@@ -778,55 +778,37 @@
           <code class="ruby">    @filter_trading = params[:filter_trading]</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="48">
+        <li class="missed" data-hits="0" data-linenumber="48">
+          
+          
+          <code class="ruby">    @filter_tags = params[:filter_tags]</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="49">
           
           
           <code class="ruby"></code>
         </li>
       
-        <li class="missed" data-hits="0" data-linenumber="49">
-          
-          
-          <code class="ruby">    if ((@filter_investment ==  @filter_trading))</code>
-        </li>
-      
         <li class="missed" data-hits="0" data-linenumber="50">
           
           
-          <code class="ruby">      @stock_watchlists = StockWatchlist.paginate(page: params[:page])</code>
+          <code class="ruby">    @stock_watchlists = StockWatchlist.search([@filter_investment,@filter_trading],nil,</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="51">
           
           
-          <code class="ruby">    else</code>
+          <code class="ruby">                                              @filter_tags).paginate(page: params[:page])</code>
         </li>
       
-        <li class="missed" data-hits="0" data-linenumber="52">
-          
-          
-          <code class="ruby">      @stock_watchlists = (@filter_investment ? StockWatchlist.investment_stocks :</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="53">
-          
-          
-          <code class="ruby">                           StockWatchlist.trading_stocks).paginate(page: params[:page])</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="54">
-          
-          
-          <code class="ruby">    end</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="55">
+        <li class="never" data-hits="" data-linenumber="52">
           
           
           <code class="ruby">  end</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="56">
+        <li class="never" data-hits="" data-linenumber="53">
           
           
           <code class="ruby">end</code>
@@ -1549,8 +1531,8 @@
     <h3>app/models/stock_watchlist.rb</h3>
     <h4><span class="green">100.0 %</span> covered</h4>
     <div>
-      <b>28</b> relevant lines. 
-      <span class="green"><b>28</b> lines covered</span> and
+      <b>32</b> relevant lines. 
+      <span class="green"><b>32</b> lines covered</span> and
       <span class="red"><b>0</b> lines missed.</span>
     </div>
   </div>
@@ -1669,163 +1651,163 @@
         <li class="covered" data-hits="1" data-linenumber="19">
           <span class="hits">1</span>
           
-          <code class="ruby">  VALID_CLASSIFICATION_REGEX = /INVESTMENT|TRADING/</code>
+          <code class="ruby">  CLASSIFICATION_INVESTMENT = &quot;INVESTMENT&quot;</code>
         </li>
       
         <li class="covered" data-hits="1" data-linenumber="20">
           <span class="hits">1</span>
           
-          <code class="ruby">  validates :classification, presence: true, format: {with: VALID_CLASSIFICATION_REGEX}</code>
+          <code class="ruby">  CLASSIFICATION_TRADING = &quot;TRADING&quot;</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="21">
           
           
-          <code class="ruby">  </code>
-        </li>
-      
-        <li class="covered" data-hits="79" data-linenumber="22">
-          <span class="hits">79</span>
-          
-          <code class="ruby">  before_save {|stock_watchlist| stock_watchlist.symbol = stock_watchlist.symbol.upcase}</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="23">
-          
-          
           <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="22">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  VALID_CLASSIFICATION_REGEX = /INVESTMENT|TRADING/</code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="23">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  validates :classification, presence: true, format: {with: VALID_CLASSIFICATION_REGEX}</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="24">
           
           
-          <code class="ruby">  # class level methods</code>
+          <code class="ruby">  </code>
         </li>
       
-        <li class="covered" data-hits="1" data-linenumber="25">
-          <span class="hits">1</span>
+        <li class="covered" data-hits="79" data-linenumber="25">
+          <span class="hits">79</span>
           
-          <code class="ruby">  def self.investment_stocks</code>
+          <code class="ruby">  before_save {|stock_watchlist| stock_watchlist.symbol = stock_watchlist.symbol.upcase}</code>
         </li>
       
-        <li class="covered" data-hits="5" data-linenumber="26">
-          <span class="hits">5</span>
+        <li class="never" data-hits="" data-linenumber="26">
           
-          <code class="ruby">    where(&quot;classification = ?&quot;, &quot;INVESTMENT&quot;)</code>
+          
+          <code class="ruby"></code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="27">
           
           
-          <code class="ruby">  end</code>
+          <code class="ruby">  # class level methods</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="28">
+        <li class="covered" data-hits="1" data-linenumber="28">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  def self.search(classifications, watch_parameters, tag_names)</code>
+        </li>
+      
+        <li class="covered" data-hits="17" data-linenumber="29">
+          <span class="hits">17</span>
+          
+          <code class="ruby">    stocks = scoped</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="30">
           
           
           <code class="ruby"></code>
-        </li>
-      
-        <li class="covered" data-hits="1" data-linenumber="29">
-          <span class="hits">1</span>
-          
-          <code class="ruby">  def self.trading_stocks</code>
-        </li>
-      
-        <li class="covered" data-hits="5" data-linenumber="30">
-          <span class="hits">5</span>
-          
-          <code class="ruby">    where(&quot;classification = ?&quot;, &quot;TRADING&quot;)</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="31">
           
           
-          <code class="ruby">  end</code>
+          <code class="ruby">    stocks = stocks.where(&quot;classification in (?)&quot;, classifications) if classifications &amp;&amp; </code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="32">
+        <li class="covered" data-hits="17" data-linenumber="32">
+          <span class="hits">17</span>
+          
+          <code class="ruby">      classifications.length &gt; 0</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="33">
           
           
           <code class="ruby"></code>
         </li>
       
-        <li class="covered" data-hits="1" data-linenumber="33">
-          <span class="hits">1</span>
+        <li class="never" data-hits="" data-linenumber="34">
           
-          <code class="ruby">  def self.tagged_stocks (tag_names)</code>
+          
+          <code class="ruby">    stocks = stocks.joins(:tags).where(&quot;name in (?)&quot;,tag_names ).</code>
         </li>
       
-        <li class="covered" data-hits="5" data-linenumber="34">
-          <span class="hits">5</span>
+        <li class="covered" data-hits="17" data-linenumber="35">
+          <span class="hits">17</span>
           
-          <code class="ruby">    stocks = []</code>
-        </li>
-      
-        <li class="covered" data-hits="5" data-linenumber="35">
-          <span class="hits">5</span>
-          
-          <code class="ruby">    stocks = StockWatchlist.joins(:tags).where(&quot;name in (?)&quot;,tag_names ).group(&quot;id&quot;) if tag_names</code>
+          <code class="ruby">      group(&quot;'stock_watchlists'.id&quot;) if tag_names &amp;&amp; tag_names.length &gt; 0</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="36">
           
           
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="17" data-linenumber="37">
+          <span class="hits">17</span>
+          
+          <code class="ruby">    return stocks</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="38">
+          
+          
           <code class="ruby">  end</code>
         </li>
       
-        <li class="never" data-hits="" data-linenumber="37">
+        <li class="never" data-hits="" data-linenumber="39">
           
           
           <code class="ruby"></code>
         </li>
       
-        <li class="covered" data-hits="1" data-linenumber="38">
+        <li class="covered" data-hits="1" data-linenumber="40">
           <span class="hits">1</span>
           
-          <code class="ruby">  def self.tagged_investment_stocks (tag_names)</code>
+          <code class="ruby">  def self.investment_stocks</code>
         </li>
       
-        <li class="covered" data-hits="3" data-linenumber="39">
+        <li class="covered" data-hits="3" data-linenumber="41">
           <span class="hits">3</span>
           
-          <code class="ruby">    stocks = []</code>
-        </li>
-      
-        <li class="covered" data-hits="3" data-linenumber="40">
-          <span class="hits">3</span>
-          
-          <code class="ruby">    stocks = StockWatchlist.investment_stocks.joins(:tags).where(&quot;name in (?)&quot;,tag_names ).group(&quot;id&quot;) if tag_names</code>
-        </li>
-      
-        <li class="never" data-hits="" data-linenumber="41">
-          
-          
-          <code class="ruby">  end</code>
+          <code class="ruby">    search([CLASSIFICATION_INVESTMENT], nil, nil)</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="42">
           
           
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="43">
+          
+          
           <code class="ruby"></code>
         </li>
       
-        <li class="covered" data-hits="1" data-linenumber="43">
+        <li class="covered" data-hits="1" data-linenumber="44">
           <span class="hits">1</span>
           
-          <code class="ruby">  def self.tagged_trading_stocks (tag_names)</code>
+          <code class="ruby">  def self.trading_stocks</code>
         </li>
       
-        <li class="covered" data-hits="3" data-linenumber="44">
-          <span class="hits">3</span>
+        <li class="covered" data-hits="2" data-linenumber="45">
+          <span class="hits">2</span>
           
-          <code class="ruby">    stocks = []</code>
-        </li>
-      
-        <li class="covered" data-hits="3" data-linenumber="45">
-          <span class="hits">3</span>
-          
-          <code class="ruby">    stocks = StockWatchlist.trading_stocks.joins(:tags).where(&quot;name in (?)&quot;,tag_names ).group(&quot;id&quot;) if tag_names</code>
+          <code class="ruby">    search([CLASSIFICATION_TRADING], nil, nil)</code>
         </li>
       
         <li class="never" data-hits="" data-linenumber="46">
@@ -1835,6 +1817,78 @@
         </li>
       
         <li class="never" data-hits="" data-linenumber="47">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="48">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  def self.tagged_stocks (tag_names)</code>
+        </li>
+      
+        <li class="covered" data-hits="5" data-linenumber="49">
+          <span class="hits">5</span>
+          
+          <code class="ruby">    search(nil, nil, tag_names)</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="50">
+          
+          
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="51">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="52">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  def self.tagged_investment_stocks (tag_names)</code>
+        </li>
+      
+        <li class="covered" data-hits="3" data-linenumber="53">
+          <span class="hits">3</span>
+          
+          <code class="ruby">    search([CLASSIFICATION_INVESTMENT], nil, tag_names)</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="54">
+          
+          
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="55">
+          
+          
+          <code class="ruby"></code>
+        </li>
+      
+        <li class="covered" data-hits="1" data-linenumber="56">
+          <span class="hits">1</span>
+          
+          <code class="ruby">  def self.tagged_trading_stocks (tag_names)</code>
+        </li>
+      
+        <li class="covered" data-hits="3" data-linenumber="57">
+          <span class="hits">3</span>
+          
+          <code class="ruby">    search([CLASSIFICATION_TRADING], nil, tag_names)</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="58">
+          
+          
+          <code class="ruby">  end</code>
+        </li>
+      
+        <li class="never" data-hits="" data-linenumber="59">
           
           
           <code class="ruby">end</code>
