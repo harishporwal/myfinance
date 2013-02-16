@@ -38,18 +38,33 @@ class StockWatchlistsController < ApplicationController
   def destroy
     StockWatchlist.find(params[:id]).destroy
     flash[:success] = "Stock removed successfully"
-    redirect_to stock_watchlists_path
+
+
+    respond_to do |format|
+      format.html {redirect_to stock_watchlists_path}
+      format.js {@stock_watchlists = search_stocks}
+    end
   end
 
   def index
     @stock_tags ||= Tag.unique_stock_tags
-    @filter_investment = params[:filter_investment]
-    @filter_trading = params[:filter_trading]
-    @filter_tags = params[:filter_tags]
+    @stock_watchlists = search_stocks
 
-
-    filter_classification = [@filter_investment, @filter_trading]
-    @stock_watchlists = StockWatchlist.search(filter_classification.delete_if{|x| x == nil},
-                                              nil,@filter_tags).paginate(page: params[:page])
+    respond_to do |format|
+      format.html       
+      format.js
+    end
   end
+
+  private
+    def search_stocks
+      @filter_investment = params[:filter_investment]
+      @filter_trading = params[:filter_trading]
+      @filter_tags = params[:filter_tags]
+
+
+      filter_classification = [@filter_investment, @filter_trading]
+      StockWatchlist.search(filter_classification.delete_if{|x| x == nil},
+                                      nil,@filter_tags).paginate(page: params[:page], per_page: 25)
+    end
 end

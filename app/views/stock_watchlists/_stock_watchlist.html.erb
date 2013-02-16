@@ -9,6 +9,20 @@
   <%= stock_watchlist.notes%>
   </td>
   <td>
-  <%= link_to "Delete", stock_watchlist, method: :delete, data: { confirm: "You sure?" } %>
+  <!--
+  <%= link_to "Delete", stock_watchlist, method: :delete, data: { confirm: "You sure?" }, id: "delete_stock_watchlist"%>
+  -->
+  <%= form_for(stock_watchlist, html: { method: :delete },  remote: true) do |f| %>
+    <% if @filter_investment && !@filter_investment.empty? %>
+      <%= hidden_field_tag :filter_investment, @filter_investment %>
+    <% end %>
+    <% if @filter_trading && !@filter_trading.empty? %>
+      <%= hidden_field_tag :filter_trading, @filter_trading%>
+    <% end %>
+    <% if @filter_tags && !@filter_tags.empty? %>
+      <%= hidden_field_tag :filter_tags, @filter_tags%>
+    <% end %>
+    <%= f.submit "Delete", data: { confirm: "You sure?" },class: "btn btn-primary btn-small", id: "delete_stock_watchlist"%>
+  <% end %>  
   </td>
 </tr>

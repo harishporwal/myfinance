@@ -4,9 +4,9 @@
   <div class="controls">
     <!-- Inline Checkboxes -->
     <%= label_tag(:filter_investment, "Investments", class: "checkbox inline") %>
-    <%= check_box_tag(:filter_investment,"INVESTMENT",@filter_investment == 'INVESTMENT') %>  
+    <%= check_box_tag(:filter_investment,"INVESTMENT",@filter_investment == 'INVESTMENT',:onchange => "$(this).submit()" ) %>  
     <%= label_tag(:filter_trading, "Trading", class: "checkbox inline") %>
-    <%= check_box_tag(:filter_trading,"TRADING",@filter_trading == 'TRADING') %>  
+    <%= check_box_tag(:filter_trading,"TRADING",@filter_trading == 'TRADING',:onchange => "$(this).submit()") %>  
   </div>
 </div>
 
@@ -16,17 +16,17 @@
   <div class="controls">
     <!-- Inline Checkboxes -->
     <%= label_tag(:filter_50_ema, "50 EMA", class: "checkbox inline") %>
-    <%= check_box_tag(:filter_50_ema) %>  
+    <%= check_box_tag(:filter_50_ema, :onclick => "$(this).submit()") %>  
     <%= label_tag(:filter_100_ema, "100 EMA", class: "checkbox inline") %>
-    <%= check_box_tag(:filter_100_ema) %>  
+    <%= check_box_tag(:filter_100_ema, :onclick => "$(this).submit()") %>  
     <%= label_tag(:filter_200_ema, "200 EMA", class: "checkbox inline") %>
-    <%= check_box_tag(:filter_200_ema) %>  
+    <%= check_box_tag(:filter_200_ema, :onclick => "$(this).submit()") %>  
     <%= label_tag(:filter_resistance, "Resistance", class: "checkbox inline") %>
-    <%= check_box_tag(:filter_resistance) %>  
+    <%= check_box_tag(:filter_resistance, :onclick => "$(this).submit()") %>  
     <%= label_tag(:filter_breakout, "Breakout", class: "checkbox inline") %>
-    <%= check_box_tag(:filter_breakout) %>  
+    <%= check_box_tag(:filter_breakout, :onclick => "$(this).submit()") %>  
     <%= label_tag(:filter_price, "Price", class: "checkbox inline") %>
-    <%= check_box_tag(:filter_price) %>  
+    <%= check_box_tag(:filter_price, :onclick => "$(this).submit()") %>  
   </div>
 </div>
 
@@ -35,6 +35,6 @@
   <!-- Multiple Checkboxes -->
   <div class="controls">
     <!-- Inline Checkboxes -->
-    <%= select_tag(:filter_tags, options_from_collection_for_select(@stock_tags, :name, :name, @filter_tags), multiple: true) %>
+    <%= select_tag(:filter_tags, options_from_collection_for_select(@stock_tags, :name, :name, @filter_tags), multiple: true, onchange: "$(this).submit()") %>
   </div>
 </div>

@@ -8,34 +8,24 @@
     <div class="span12">
       <div class="form-horizontal well">      
       <legend>Choose Filter Criteria</legend>
-      <%= form_tag("/stock_watchlists", :method => "get") do %>
+      <%= form_tag("/stock_watchlists", :method => "get", remote: true) do %>
         <fieldset>
           <%= render "filter_criteria" %>
+          <!--
           <div class="form-actions">
             <%= submit_tag("Filter", class: "btn btn-smally") %>
             <%= submit_tag("Reset", class: "btn btn-small") %>
           </div>
+          -->
         </fieldset>
       <% end %>
 
       <section id="tables">
         <legend>List of Stocks</legend>
-        <%= will_paginate %>
-        
-        <table class="table table-bordered table-striped table-hover">
-          <thead>
-            <tr>
-              <th>Symbol</th>
-              <th>Classification</th>
-              <th>Notes</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-          <%= render @stock_watchlists%>
-          </tbody>
-        </table>
-        <%= will_paginate %>
+        <div id="stock_watchlist_table">
+          <%= render "stock_watchlist_table"%>
+        </div>
+        <%= will_paginate @stock_watchlists%>
       </section>
       </div>
     </div>

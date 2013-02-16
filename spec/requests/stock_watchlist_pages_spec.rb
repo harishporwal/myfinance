@@ -181,9 +181,9 @@ describe "StockWatchlistPages" do
         visit stock_watchlists_path
       end
 
-      it {should have_link('Delete', href: stock_watchlist_path(stock_watchlist))}
+      it {should have_button('Delete')}
       it "should be able to delete stock" do
-        expect {click_link('Delete')}.to change(StockWatchlist, :count).by(-1) && 
+        expect {click_button('Delete')}.to change(StockWatchlist, :count).by(-1) && 
                   change(WatchParameter, :count).by(-1) #&& change(Tag, :count).by(-1)
       end
     end
@@ -215,7 +215,6 @@ describe "StockWatchlistPages" do
 
 
       it "without selection, should list all stocks" do
-        click_button 'Filter'
         (investment_symbols + trading_symbols + other_symbols).each {|symbol|
           should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
 
@@ -225,161 +224,87 @@ describe "StockWatchlistPages" do
 
         
       describe "for classification" do
-        before do
-          uncheck "Investments"
-          uncheck "Trading"
-        end
-
-        it "should list only investment stocks" do
-          check "Investments"
-          click_button 'Filter'
+        it "should list only investment stocks - ajax call" do
+          xml_http_request :get, '/stock_watchlists', filter_investment: "INVESTMENT"
           
-          (investment_symbols + other_symbols).each  { |symbol| 
-                        should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
-          (trading_symbols).each { |symbol|
-                        should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
-
-          page.find('#filter_investment').should be_checked
-          page.find('#filter_trading').should_not be_checked
+          (investment_symbols + other_symbols).each  { |symbol| response.body.should include("#{symbol}")}
+          (trading_symbols).each { |symbol| response.body.should_not include("#{symbol}")}
         end
 
         it "should list only trading stocks" do
-          check "Trading"
-          click_button 'Filter'
+          xml_http_request :get, '/stock_watchlists', filter_trading: "TRADING"
           
-          (trading_symbols).each { |symbol|
-                  should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
-          (investment_symbols + other_symbols).each { |symbol|
-                  should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
-
-          page.find('#filter_investment').should_not be_checked
-          page.find('#filter_trading').should be_checked
+          (trading_symbols).each { |symbol| response.body.should include("#{symbol}")}
+          (investment_symbols + other_symbols).each  { |symbol| 
+            response.body.should_not include("#{symbol}")}
         end
 
            
         it "should list both trading & investment stocks" do
-          check "Investments"
-          check "Trading"
-          click_button 'Filter'
+          xml_http_request :get, '/stock_watchlists', filter_investment: "INVESTMENT", 
+            filter_trading:"TRADING"
           
-          (investment_symbols + trading_symbols + other_symbols).each { |symbol|
-            should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
-
-          page.find('#filter_investment').should be_checked
-          page.find('#filter_trading').should be_checked
+          (investment_symbols + trading_symbols + other_symbols).each  { |symbol| 
+            response.body.should include("#{symbol}")}
         end
       end
 
       describe "for tags" do
-        before do
-          uncheck "Investments"
-          uncheck "Trading"
-          unselect "Tag1"
-          unselect "Tag2"
-          unselect "Tag3"
-        end
-
         it "should list only selected tag stocks -single selection" do
-          select "Tag1"
+          xml_http_request :get, '/stock_watchlists', filter_tags: ["Tag1"] 
           
-          click_button 'Filter'
-          
-          (tag1_symbols).each  {|symbol|
-              should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
-          
-          (tag2_symbols+tag3_symbols).each { |symbol|
-              should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
-
-          page.find_field('filter_tags').find('option[selected]').text.should == 'Tag1'
+          (tag1_symbols).each  {|symbol| response.body.should include("#{symbol}")}
+          (tag2_symbols+tag3_symbols).each { |symbol| response.body.should_not include("#{symbol}")}
         end
 
         it "should list only selected tag stocks -multiple selection" do
-          select "Tag1"
-          select "Tag2"
-          
-          click_button 'Filter'
- 
-          (tag1_symbols + tag2_symbols).each  { |symbol|
-              should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
- 
-          (tag3_symbols).each  { |symbol|
-              should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+          xml_http_request :get, '/stock_watchlists', filter_tags: ["Tag1","Tag2"] 
 
-          page.has_select?('filter_tags', selected: ["Tag1","Tag2"]).should == true
+          (tag1_symbols + tag2_symbols).each  {|symbol| response.body.should include("#{symbol}")}
+          (tag3_symbols).each { |symbol| response.body.should_not include("#{symbol}")}
         end
       end
 
       describe "for combination of classification & tags" do
-        before do
-          uncheck "Investments"
-          uncheck "Trading"
-          unselect "Tag1"
-          unselect "Tag2"
-          unselect "Tag3"
-        end
-
         it "should list investment and tagged stocks" do
-          check "Investments"
-          select "Tag1"
-          
-          click_button 'Filter'
+          xml_http_request :get, '/stock_watchlists', filter_investment: "INVESTMENT", 
+            filter_tags: ["Tag1"] 
           
           (investment_symbols & tag1_symbols).each  {|symbol|
-              should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+            response.body.should include("#{symbol}")}
  
           (trading_symbols).each  {|symbol|
-              should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+            response.body.should_not include("#{symbol}")}
  
           (tag2_symbols + tag3_symbols).each  {|symbol|
-              should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
-          
-
-          page.find('#filter_investment').should be_checked
-          page.find('#filter_trading').should_not be_checked
-          page.find_field('filter_tags').find('option[selected]').text.should == 'Tag1'
+            response.body.should_not include("#{symbol}")}
         end
 
         it "should list both investment & trading - tagged stocks" do
-          check "Investments"
-          check "Trading"
-          select "Tag2"
-          
-          click_button 'Filter'
+          xml_http_request :get, '/stock_watchlists', filter_investment: "INVESTMENT", 
+            filter_trading: "TRADING", filter_tags: ["Tag2"] 
           
           (investment_symbols & tag2_symbols).each {|symbol|
-              should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+            response.body.should include("#{symbol}")}
 
           (trading_symbols & tag2_symbols).each {|symbol|
-              should have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
+            response.body.should include("#{symbol}")}
 
           (tag1_symbols + tag3_symbols).each {|symbol|
-              should_not have_link("#{symbol}", href: edit_stock_watchlist_path(symbol))}
-
-          page.find('#filter_investment').should be_checked
-          page.find('#filter_trading').should be_checked
-          page.find_field('filter_tags').find('option[selected]').text.should == 'Tag2'
+            response.body.should_not include("#{symbol}")}
         end
 
        it "should list both investment & trading - multiple tagged stocks" do
-          check "Investments"
-          check "Trading"
-          select "Tag1"
-          select "Tag2"
+          xml_http_request :get, '/stock_watchlists', filter_investment: "INVESTMENT", 
+            filter_trading: "TRADING", filter_tags: ["Tag1","""Tag2"] 
           
-          click_button 'Filter'
- 
           (investment_symbols & (tag1_symbols + tag2_symbols)).each {|symbol|
-              should have_link("#{symbol}",  href: edit_stock_watchlist_path(symbol))}
+            response.body.should include("#{symbol}")}
           (trading_symbols & (tag1_symbols + tag2_symbols)).each {|symbol|
-              should have_link("#{symbol}",  href: edit_stock_watchlist_path(symbol))}
+            response.body.should include("#{symbol}")}
 
           (tag3_symbols).each {|symbol|
-              should_not have_link("#{symbol}",  href: edit_stock_watchlist_path(symbol))}
-
-          page.find('#filter_investment').should be_checked
-          page.find('#filter_trading').should be_checked
-
-          page.has_select?('filter_tags', selected: ["Tag1","Tag2"]).should == true
+            response.body.should_not include("#{symbol}")}
        end
       end
     end
