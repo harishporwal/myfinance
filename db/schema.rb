@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130115025713) do
+ActiveRecord::Schema.define(:version => 20130218122333) do
+
+  create_table "stock_data", :force => true do |t|
+    t.string   "symbol"
+    t.decimal  "ma_50"
+    t.decimal  "ma_100"
+    t.decimal  "ma_200"
+    t.decimal  "price"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "stock_watchlists", :force => true do |t|
     t.string   "symbol"

@@ -199,6 +199,7 @@ GEM
     will_paginate (3.0.3)
     xpath (0.1.4)
       nokogiri (~> 1.3)
+    yahoofinance (1.2.2)
 
 PLATFORMS
   ruby
@@ -230,3 +231,4 @@ DEPENDENCIES
   sqlite3 (= 1.3.5)
   uglifier (= 1.2.3)
   will_paginate (= 3.0.3)
+  yahoofinance

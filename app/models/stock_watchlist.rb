@@ -10,6 +10,8 @@ class StockWatchlist < ActiveRecord::Base
   has_one :watch_parameter, dependent: :destroy, primary_key: "symbol", foreign_key: "symbol"
   accepts_nested_attributes_for :watch_parameter, allow_destroy:true
 
+  has_one :stock_data, dependent: :destroy, primary_key: "symbol", foreign_key: "symbol"
+
   has_many :tags, as: :taggable, dependent: :destroy
   accepts_nested_attributes_for :tags, reject_if: lambda {|a| a[:name].blank?}, allow_destroy:true
 
@@ -22,6 +24,7 @@ class StockWatchlist < ActiveRecord::Base
   VALID_CLASSIFICATION_REGEX = /INVESTMENT|TRADING/
   validates :classification, presence: true, format: {with: VALID_CLASSIFICATION_REGEX}
   
+  before_create :build_default_watch_parameter, :build_default_stock_data
   before_save {|stock_watchlist| stock_watchlist.symbol = stock_watchlist.symbol.upcase}
 
   # class level methods
@@ -34,4 +37,30 @@ class StockWatchlist < ActiveRecord::Base
 
     return stocks
   end
+
+  def self.update_price(symbols)
+    stock_watchlist_objects = {}
+    stock_symbols = (symbols.kind_of?(Array) ? symbols : [symbols]).collect do |symbol|
+      obj = find_by_symbol(symbol)
+      stock_watchlist_objects[symbol] = obj
+      [obj.symbol, obj.exchange]
+    end
+
+    stock_prices = StockQuoteHelper::get_price(stock_symbols)
+    stock_prices.each do |key_symbol, price_object| 
+      stock_watchlist_objects[StockQuoteHelper::normalize_symbol(key_symbol)].stock_data.
+        update_attributes(price: price_object.lastTrade)
+    end
+  end
+
+  private
+    def build_default_stock_data
+      build_stock_data
+      true
+    end
+
+    def build_default_watch_parameter
+      build_watch_parameter
+      true
+    end
 end

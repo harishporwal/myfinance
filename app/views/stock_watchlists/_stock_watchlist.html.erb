@@ -3,6 +3,9 @@
   <%= link_to stock_watchlist.symbol, edit_stock_watchlist_path(stock_watchlist.symbol) %>
   </td>
   <td>
+  <%= number_with_precision(stock_watchlist.stock_data.price, precision:2)%>
+  </td>
+  <td>
   <%= stock_watchlist.classification %>
   </td>
   <td>

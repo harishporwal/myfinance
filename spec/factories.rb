@@ -26,6 +26,22 @@ FactoryGirl.define do
     association :stock_watchlist, factory: :stock_watchlist
   end
 
+  factory :stock_data do
+    ma_50 100
+    ma_100 80
+    ma_200 70
+    price 105
+  end
+ 
+  factory :stock_stock_data do
+    ma_50 100
+    ma_100 80
+    ma_200 70
+    price 105
+
+    association :stock_watchlist, factory: :stock_watchlist
+  end
+  
   factory :tag do
     sequence(:name) {|n| "Tag#{n}"}
   end
@@ -46,5 +62,6 @@ FactoryGirl.define do
     end
 
     association :watch_parameter, factory: :watch_parameter
+    association :stock_data, factory: :stock_data
   end
 end

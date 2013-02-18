@@ -13,6 +13,7 @@ describe StockWatchlist do
 
   it { should respond_to(:watch_parameter) }
   it { should respond_to(:tags) }
+  it { should respond_to(:stock_data) }
 
   it { should be_valid }
 
@@ -144,6 +145,24 @@ describe StockWatchlist do
     end
   end
 
+  describe "stock_data associations" do 
+    before {@stock.save}
+
+    let!(:param1) {FactoryGirl.create(
+      :stock_data, symbol: @stock.symbol)}
+
+    it 'should have all the associated stock_data' do
+      @stock.stock_data == param1
+    end
+
+    it 'should destroy associated stock_data ' do
+      parameter = @stock.stock_data.dup
+      @stock.destroy
+      parameter.should_not be_nil
+      StockData.find_by_id(parameter.id).should be_nil
+    end
+  end
+  
   describe "stock classification" do
     let(:investment_stock_symbols) {["ITC","HUL","HDFC","TATAMOTORS","BAJAJ-AUTO"]}
     let(:trading_stock_symbols) {["AKZO","JP","PIPAVAV"]}
@@ -232,6 +251,31 @@ describe StockWatchlist do
     it 'should not show trading stocks which are wrongly tagged' do
       StockWatchlist.search([StockWatchlist::CLASSIFICATION_TRADING],nil,[momentum_tag]).
         length.should  == 0
+    end
+  end
+
+  describe "stock price" do
+    it "should get price for a specified stock" do
+      single_stock =  "HDFC"
+      exchange = "NSE"
+      stock = FactoryGirl.create(:stock_watchlist, symbol: single_stock, exchange: exchange)
+      
+      StockWatchlist.update_price(single_stock)
+      
+      price = StockQuoteHelper::get_price([[single_stock, exchange]])
+      StockWatchlist.find_by_symbol(single_stock).stock_data.price.should ==  price[price.keys[0]].lastTrade
+    end
+
+    it "should get price for a given list of stocks" do
+      multiple_stocks = ["ITC","HINDUNILV","TATAMOTOR"]
+      exchange = "NSE"
+      multiple_stocks.each {|symbol| FactoryGirl.create(:stock_watchlist, symbol: symbol)}
+
+      StockWatchlist.update_price(multiple_stocks)
+      multiple_stocks.each do |symbol| 
+        price = StockQuoteHelper::get_price([[symbol, exchange]])
+        StockWatchlist.find_by_symbol(symbol).stock_data.price.should == price[price.keys[0]].lastTrade
+      end
     end
   end
 end
