@@ -38,19 +38,17 @@ class StockWatchlist < ActiveRecord::Base
     return stocks
   end
 
-  def self.update_price(symbols)
-    stock_watchlist_objects = {}
-    stock_symbols = (symbols.kind_of?(Array) ? symbols : [symbols]).collect do |symbol|
-      obj = find_by_symbol(symbol)
-      stock_watchlist_objects[symbol] = obj
-      [obj.symbol, obj.exchange]
-    end
+  def self.update_price(symbols = nil)
+    puts "updating stock price"
+    stock_watchlist_objects = scoped
+    stock_watchlist_objects = where('symbol in (?)', symbols) if symbols
 
+    stock_symbols = stock_watchlist_objects.collect { |obj| [obj.symbol, obj.exchange]}
+    
     stock_prices = StockQuoteHelper::get_price(stock_symbols)
-    stock_prices.each do |key_symbol, price_object| 
-      stock_watchlist_objects[StockQuoteHelper::normalize_symbol(key_symbol)].stock_data.
-        update_attributes(price: price_object.lastTrade)
-    end
+    stock_prices.each { |key_symbol, price_object| 
+      stock_watchlist_objects.find_by_symbol(StockQuoteHelper::normalize_symbol(key_symbol)).
+        stock_data.update_attributes(price: price_object.lastTrade) }
   end
 
   private

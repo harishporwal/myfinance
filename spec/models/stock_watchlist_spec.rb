@@ -261,9 +261,7 @@ describe StockWatchlist do
       stock = FactoryGirl.create(:stock_watchlist, symbol: single_stock, exchange: exchange)
       
       StockWatchlist.update_price(single_stock)
-      
-      price = StockQuoteHelper::get_price([[single_stock, exchange]])
-      StockWatchlist.find_by_symbol(single_stock).stock_data.price.should ==  price[price.keys[0]].lastTrade
+      StockWatchlist.find_by_symbol(single_stock).stock_data.price.should_not be_nil
     end
 
     it "should get price for a given list of stocks" do
@@ -271,10 +269,20 @@ describe StockWatchlist do
       exchange = "NSE"
       multiple_stocks.each {|symbol| FactoryGirl.create(:stock_watchlist, symbol: symbol)}
 
-      StockWatchlist.update_price(multiple_stocks)
+      StockWatchlist.update_price(multiple_stocks[0..1])
+      StockWatchlist.find_by_symbol(multiple_stocks.first).stock_data.price.should_not be_nil
+      StockWatchlist.find_by_symbol(multiple_stocks.second).stock_data.price.should_not be_nil
+      StockWatchlist.find_by_symbol(multiple_stocks.last).stock_data.price.should be_nil
+    end
+
+    it "should get price for a given list of stocks" do
+      multiple_stocks = ["ITC","HINDUNILV","TATAMOTOR"]
+      exchange = "NSE"
+      multiple_stocks.each {|symbol| FactoryGirl.create(:stock_watchlist, symbol: symbol)}
+
+      StockWatchlist.update_price
       multiple_stocks.each do |symbol| 
-        price = StockQuoteHelper::get_price([[symbol, exchange]])
-        StockWatchlist.find_by_symbol(symbol).stock_data.price.should == price[price.keys[0]].lastTrade
+        StockWatchlist.find_by_symbol(symbol).stock_data.price.should_not be_nil
       end
     end
   end

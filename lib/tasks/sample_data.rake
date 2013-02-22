@@ -7,10 +7,6 @@ namespace :db do
   task populate_stock_watchlist: :environment do
     make_stock_watchlist
   end
-
-  task populate_stock_prices: :environment do
-    update_stock_prices
-  end
 end
 
 def make_user
@@ -23,10 +19,6 @@ end
 def make_stock_watchlist
   investment_stocks.each {|symbol| StockWatchlist.create!(symbol: symbol, classification: "INVESTMENT", exchange: "NSE", notes: "Good Investment Stock - #{symbol}") }
   trading_stocks.each {|symbol| StockWatchlist.create!(symbol: symbol, classification: "TRADING", exchange: "NSE", notes: "Good Trading Stock - #{symbol}") }
-end
-
-def update_stock_prices
-  StockWatchlist.update_price(investment_stocks + trading_stocks)
 end
 
 private 

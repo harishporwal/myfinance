@@ -14,3 +14,13 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require_tree .
+$(function () {
+  if ($('#stock_watchlist_table').length > 0) {
+    setTimeout(updatePrices, 10000*6*1);
+  }
+});
+
+function updatePrices() {
+  $.getScript('/stock_watchlists.js');
+  setTimeout(updatePrices, 10000*6*1);
+}
