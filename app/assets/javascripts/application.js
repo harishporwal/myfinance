@@ -16,11 +16,23 @@
 //= require_tree .
 $(function () {
   if ($('#stock_watchlist_table').length > 0) {
-    setTimeout(updatePrices, 10000*6*1);
+    setTimeout(updatePrices, 10000);
   }
 });
 
 function updatePrices() {
-  $.getScript('/stock_watchlists.js');
-  setTimeout(updatePrices, 10000*6*1);
+  var params = null;
+  if ($('#filter_investment').is(':checked')) {
+    params='filter_investment=' + $('#filter_investment').attr('value');
+  }
+
+  if ($('#filter_trading').is(':checked')) {
+    if (params != null) {
+      params = params + '&';
+    }
+    params='filter_trading=' + $('#filter_trading').attr('value');
+  }
+
+  $.getScript('/stock_watchlists.js?filter_investment=' + filter_investment);
+  setTimeout(updatePrices, 10000);
 }
